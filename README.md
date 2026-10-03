@@ -6,6 +6,14 @@ Kit Ledger is a small, local planner for a workshop organizer assembling several
 
 [日本語](README.ja.md) · [Input contract](docs/input-contract.md) · [Design and limitations](docs/design.md) · [Verification](docs/verification.md) · [Product positioning](docs/positioning.md)
 
+## Preview
+
+![Kit Ledger in English on desktop, showing an exact eight-kit plan and material checks](docs/screenshots/desktop-en.png)
+
+[Japanese desktop](docs/screenshots/desktop-ja.png) · [English mobile](docs/screenshots/mobile-en.png) · [Japanese mobile](docs/screenshots/mobile-ja.png)
+
+These are inspected screenshots from the [verified implementation run](https://github.com/Masanori-Spec/kit-ledger/actions/runs/37141178947), which passed 100 tests on each of Node 22/24 and all 11 sandboxed browser scenarios. [Exact tested commit and evidence](docs/verification.md).
+
 ## What it does
 
 - Reads a single-level recipe and stock snapshot as JSON

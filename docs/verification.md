@@ -1,5 +1,19 @@
 # Verification record
 
+## Verified implementation revision
+
+The revised implementation at commit [`5d4272df20222bcc796666f59a1b680288eecfe7`](https://github.com/Masanori-Spec/kit-ledger/commit/5d4272df20222bcc796666f59a1b680288eecfe7) passed [GitHub Actions run 37141178947](https://github.com/Masanori-Spec/kit-ledger/actions/runs/37141178947) on 2026-10-03:
+
+- All three jobs passed: Node.js 22, Node.js 24 and sandboxed Chromium
+- Both Node jobs passed all 100 tests, syntax, formatting and build checks
+- All 11 browser scenarios passed, including the stronger scroll/skip-link visibility assertions
+- The browser evidence explicitly records `sandboxEnabled: true`
+- English and Japanese desktop/mobile captures plus the focused skip-link capture were inspected; the four normal previews have clean layouts without the stray unfocused skip-link overlay
+
+The four unmodified normal captures are retained in [`screenshots/`](screenshots/). Their hashes, dimensions, exact source commit and run are recorded in [`ci-evidence.json`](ci-evidence.json). The focused-link capture remains in the workflow's browser evidence artifact.
+
+This documentation update adds only README previews, verification evidence and screenshot files. The implementation, CSS, tests and workflow are unchanged from the exact tested commit above. Verification of a subsequent repository head should distinguish those documentation additions from a newly tested implementation.
+
 ## Initial published CI and visual review
 
 The initial published source commit `0b4fd0d53f4ac1f74b8d77dd798016192b6a4f64` passed [GitHub Actions run 37140203674](https://github.com/Masanori-Spec/kit-ledger/actions/runs/37140203674) on 2026-10-03:
@@ -11,7 +25,7 @@ The initial published source commit `0b4fd0d53f4ac1f74b8d77dd798016192b6a4f64` p
 
 That visual inspection found an unfocused fixed-position skip link included partway down full-page captures taken after scrolling to export controls. The revision explicitly clips the unfocused link, retains keyboard-focus visibility, asserts its offscreen state at the top and after scrolling, and resets scroll position before every full-page capture. It also adds Japanese desktop and English mobile captures and adjusts the Japanese mobile heading to avoid a short orphaned line.
 
-These revisions pass the local 100-test/syntax/format/build checks. **CI and visual inspection for the revised source remain pending.** The earlier green run applies only to the initial commit, not automatically to this revision. No initial flawed screenshot has been promoted as a README preview.
+The revisions passed the local checks and then the exact revised CI run documented above. Only the corrected, visually inspected captures are used as README previews.
 
 ### Action-runtime maintenance warning
 
@@ -27,7 +41,7 @@ Environment: Node.js v24.19.0, Linux. A development dependency tree already avai
 - Maximum supported benchmark: 6 recipes, 100 components, 200,000 candidates; all feasible, 46 planned kits; local observation about 0.25 seconds, not a performance guarantee
 - Syntax checks, Prettier checks and static build passed
 - Invalid UTF-8, numeric-token rounding, inherited object-property collisions, duplicate/escaped JSON keys, deep nesting, limits, zero plans, reservations, CSV formulas and HTML label escaping are covered
-- Browser source includes 11 scenarios; the initial versions passed published CI, while the stronger revised visual assertions await their own run
+- All 11 browser scenarios, including the stronger revised visual assertions, passed the exact revised published CI run above
 
 ### Independent-review corrections
 
@@ -35,7 +49,7 @@ The first review found two real defects before publication: inherited prototype 
 
 ### Local browser restriction
 
-A sandbox-enabled browser attempt against the installed Chromium failed before a page opened with `socket() failed: Operation not permitted`. The Playwright-managed browser binary was not present locally. No sandbox bypass, security-setting change or privileged launch was used. Local browser scenarios are therefore **not run** in this restricted environment. The initial scenarios subsequently passed in the published sandboxed CI described above.
+A sandbox-enabled browser attempt against the installed Chromium failed before a page opened with `socket() failed: Operation not permitted`. The Playwright-managed browser binary was not present locally. No sandbox bypass, security-setting change or privileged launch was used. Local browser scenarios are therefore **not run** in this restricted environment. Both the initial and revised scenarios subsequently passed in the published sandboxed CI described above.
 
 The publication workflow is set up to install Playwright Chromium and run on Ubuntu 22.04 with `chromiumSandbox: true`. It records individual scenario outcomes and uploads English/Japanese desktop/mobile screenshots, a focused skip-link capture, example downloads and `results.json`. Publication must verify the actual commit's CI and inspect those artifacts; the existence of this workflow alone is not verification.
 
@@ -67,4 +81,4 @@ UI_ARTIFACT_DIR=browser-artifacts npm run test:browser
 
 The workflow uses Ubuntu 22.04 because sandbox-enabled Chromium is known to work in that runner configuration. The [GitHub runner retirement announcement](https://github.com/actions/runner-images/issues/14254) lists Ubuntu 22.04 retirement on April 17, 2027. Before then, test an available replacement runner with the sandbox retained; do not solve a migration failure by adding `--no-sandbox`.
 
-A source manifest and ZIP are generated at release freeze. Hash/ZIP checks establish byte identity, not correctness. The initial public CI result is linked above. A final revised commit, CI run and visual review must be recorded separately before marking the revised release verified.
+A source manifest and ZIP are generated at release freeze. Hash/ZIP checks establish byte identity, not correctness. The initial and revised implementation CI results, exact tested commit and completed visual review are linked above. These records apply to those specific source versions.

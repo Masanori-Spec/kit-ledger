@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "project": "Kit Ledger",
+  "testedSourceCommit": "5d4272df20222bcc796666f59a1b680288eecfe7",
+  "workflowRun": "https://github.com/Masanori-Spec/kit-ledger/actions/runs/37141178947",
+  "reviewDate": "2026-10-03",
+  "coreMatrix": [
+    {
+      "node": "22",
+      "testsPassed": 100,
+      "check": "passed"
+    },
+    {
+      "node": "24",
+      "testsPassed": 100,
+      "check": "passed"
+    }
+  ],
+  "browser": {
+    "sandboxEnabled": true,
+    "scenariosPassed": 11,
+    "scenarios": [
+      "real worker, exact fixture, all deterministic exports and desktop screenshot",
+      "priority trade-off and bilingual mobile rendering",
+      "edited inputs immediately invalidate results and keyboard can rerun",
+      "invalid, repeated invalid, oversized and capped inputs recover cleanly",
+      "file replacement, same-file reload and source JSON download",
+      "late file reads cannot overwrite a newer example or newer file",
+      "real worker cancellation and late callbacks cannot revive stale exports",
+      "worker failure, retry and stale error/result callbacks",
+      "worker timeout never exposes a partial plan and retries remain possible",
+      "untrusted labels are text, no external network or persistent storage",
+      "skip link, labels, no page overflow and browser Back restores a safe state"
+    ]
+  },
+  "screenshots": [
+    {
+      "path": "docs/screenshots/desktop-en.png",
+      "width": 1280,
+      "height": 1652,
+      "sha256": "0f2470353753a5554c3661647fe95d7e7a1e4224f3fe96337e654c519534a17e"
+    },
+    {
+      "path": "docs/screenshots/desktop-ja.png",
+      "width": 1280,
+      "height": 1635,
+      "sha256": "21bd7023f0c3e9218ad63d45f0e615654b3759051ec073905474c48718a9c8e1"
+    },
+    {
+      "path": "docs/screenshots/mobile-en.png",
+      "width": 390,
+      "height": 2490,
+      "sha256": "fd9b7477658e9055b59fb0062578dc24c677c785232264db03d60644df6fec1d"
+    },
+    {
+      "path": "docs/screenshots/mobile-ja.png",
+      "width": 390,
+      "height": 2413,
+      "sha256": "64b3c72497b1aecda88110a59d36a8000defaad670b5e1c347d62a10ff5e0126"
+    }
+  ],
+  "visualReview": {
+    "normalPreviewsInspected": 4,
+    "focusedSkipLinkInspected": true,
+    "unfocusedSkipOverlayAbsent": true
+  },
+  "scope": "Evidence applies to the tested source commit. Subsequent edits in this package add only README/docs evidence and screenshots; no application, CSS, test or workflow source changed.",
+  "limitations": [
+    "Focused accessibility checks only; no full WCAG audit",
+    "Safari, Firefox and screen-reader behavior unverified",
+    "Local sandboxed Chromium is restricted; browser execution verified in CI",
+    "Actions v4 Node20-runtime warning retained for maintenance; Ubuntu 22.04 retirement scheduled April 17, 2027"
+  ]
+}
