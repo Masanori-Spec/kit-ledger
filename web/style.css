@@ -76,12 +76,14 @@ button:disabled {
   position: fixed;
   z-index: 9;
   top: -100px;
+  clip-path: inset(50%);
   left: 12px;
   background: white;
   padding: 10px;
 }
 .skip:focus {
   top: 12px;
+  clip-path: none;
 }
 .topbar {
   min-height: 100px;
@@ -679,6 +681,10 @@ footer {
   h1 {
     font-size: 46px;
     letter-spacing: -2px;
+  }
+  html[lang="ja"] h1 {
+    font-size: clamp(31px, 10.25vw, 40px);
+    letter-spacing: -1.8px;
   }
   .intro {
     font-size: 14px;

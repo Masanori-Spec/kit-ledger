@@ -94,6 +94,27 @@ async function download(page, id) {
     body: await fs.readFile(await d.path(), "utf8"),
   };
 }
+async function assertSkipOffscreen(page) {
+  const skip = page.locator(".skip");
+  await expect(skip).not.toBeFocused();
+  await expect(skip).not.toBeInViewport();
+  assert.ok(
+    await skip.evaluate((el) => {
+      const rect = el.getBoundingClientRect();
+      return rect.bottom <= 0 && getComputedStyle(el).clipPath !== "none";
+    }),
+    "Unfocused skip link must be both offscreen and explicitly clipped",
+  );
+}
+async function screenshotAtTop(page, name) {
+  await assertSkipOffscreen(page);
+  await page.evaluate(() =>
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" }),
+  );
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
+  await assertSkipOffscreen(page);
+  await page.screenshot({ path: path.join(artifacts, name), fullPage: true });
+}
 test("real worker, exact fixture, all deterministic exports and desktop screenshot", async () => {
   const x = await setup(),
     { page } = x;
@@ -112,10 +133,10 @@ test("real worker, exact fixture, all deterministic exports and desktop screensh
     assert.equal(hash(d.body), hash(wanted));
     await fs.writeFile(path.join(artifacts, name), d.body);
   }
-  await page.screenshot({
-    path: path.join(artifacts, "desktop-en.png"),
-    fullPage: true,
-  });
+  await screenshotAtTop(page, "desktop-en.png");
+  await page.locator("#language").selectOption("ja");
+  await expect(page.locator("html")).toHaveAttribute("lang", "ja");
+  await screenshotAtTop(page, "desktop-ja.png");
   await x.close();
 });
 test("priority trade-off and bilingual mobile rendering", async () => {
@@ -125,6 +146,7 @@ test("priority trade-off and bilingual mobile rendering", async () => {
   await page.locator("#example-priority").click();
   await ready(page);
   await expect(page.locator(".metric strong").first()).toHaveText("4");
+  await screenshotAtTop(page, "mobile-en.png");
   await page.locator("#language").selectOption("ja");
   await expect(page.locator("html")).toHaveAttribute("lang", "ja");
   await expect(page.locator("#run")).toContainText("製作計画");
@@ -134,10 +156,7 @@ test("priority trade-off and bilingual mobile rendering", async () => {
       () => document.documentElement.scrollWidth <= window.innerWidth + 1,
     ),
   );
-  await page.screenshot({
-    path: path.join(artifacts, "mobile-ja.png"),
-    fullPage: true,
-  });
+  await screenshotAtTop(page, "mobile-ja.png");
   await x.close();
 });
 test("edited inputs immediately invalidate results and keyboard can rerun", async () => {
@@ -337,10 +356,22 @@ test("skip link, labels, no page overflow and browser Back restores a safe state
   const x = await setup(),
     { page } = x;
   await ready(page);
+  await assertSkipOffscreen(page);
+  await page.evaluate(() =>
+    window.scrollTo(0, document.documentElement.scrollHeight),
+  );
+  await assertSkipOffscreen(page);
+  await page.evaluate(() => window.scrollTo(0, 0));
   await page.keyboard.press("Tab");
   await expect(page.locator(".skip")).toBeFocused();
+  await expect(page.locator(".skip")).toBeInViewport();
+  await expect(page.locator(".skip")).toHaveCSS("clip-path", "none");
+  await page.screenshot({
+    path: path.join(artifacts, "desktop-focused-skip.png"),
+  });
   await page.keyboard.press("Enter");
   await expect(page.locator("#main")).toBeFocused();
+  await assertSkipOffscreen(page);
   await expect(page.getByLabel("Snapshot JSON", { exact: true })).toBeVisible();
   await expect(page.getByLabel("Language / 言語")).toBeVisible();
   assert.ok(
