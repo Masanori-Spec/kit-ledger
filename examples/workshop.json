@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "title": "Saturday creative workshop",
+  "components": [
+    { "id": "bag", "name": "Cotton bag", "stock": 10, "reserved": 2 },
+    { "id": "marker", "name": "Color marker", "stock": 14, "reserved": 2 },
+    { "id": "card", "name": "Activity card", "stock": 12, "reserved": 0 }
+  ],
+  "recipes": [
+    { "id": "basic", "name": "Starter kit", "requested": 8, "components": { "bag": 1, "marker": 1, "card": 1 } },
+    { "id": "deluxe", "name": "Color explorer", "requested": 4, "components": { "bag": 1, "marker": 3, "card": 1 } }
+  ],
+  "objective": { "mode": "max-kits" }
+}

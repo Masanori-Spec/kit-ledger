@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Plan a small workshop's kit mix from a local inventory snapshot. Exact bounded planning, component shortages and printable pick sheets."
+    />
+    <title>Kit Ledger · Make every component count</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main" data-i18n="skip">Skip to planner</a>
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Kit Ledger home"
+        ><span class="brand-icon" aria-hidden="true">▦</span
+        ><span
+          >Kit Ledger<span class="brand-sub">WORKSHOP PLANNING</span></span
+        ></a
+      >
+      <div class="top-actions">
+        <span class="local-badge"
+          ><span aria-hidden="true"></span
+          ><span data-i18n="local">Local by design</span></span
+        ><label class="sr-only" for="language">Language / 言語</label
+        ><select id="language">
+          <option value="en">English</option>
+          <option value="ja">日本語</option>
+        </select>
+      </div>
+    </header>
+    <main id="main" tabindex="-1">
+      <section class="hero">
+        <div>
+          <p class="eyebrow" data-i18n="eyebrow">LESS COUNTING. MORE MAKING.</p>
+          <h1 data-i18n="headline">Make every<br />component count.</h1>
+          <p class="intro" data-i18n="intro">
+            A stock snapshot. A feasible kit mix. A pick sheet you can take
+            straight to the workbench.
+          </p>
+        </div>
+        <div class="hero-note">
+          <div class="mini-box" aria-hidden="true"><i></i><i></i><i></i></div>
+          <p data-i18n="heroNote">
+            Keep reserved stock safe.<br />Know what you can make.
+          </p>
+          <span data-i18n="single"
+            >Single-level recipes · exact, bounded search</span
+          >
+        </div>
+      </section>
+      <div class="workspace">
+        <section class="input-panel panel" aria-labelledby="input-heading">
+          <div class="section-heading">
+            <span class="step">01</span>
+            <div>
+              <h2 id="input-heading" data-i18n="snapshot">Your snapshot</h2>
+              <p data-i18n="snapshotHelp">
+                One local JSON file, no account needed
+              </p>
+            </div>
+          </div>
+          <div class="example-strip">
+            <span data-i18n="try">Try the workshop example</span>
+            <div>
+              <button id="example-max" class="text-button" data-i18n="most">
+                Most kits</button
+              ><button
+                id="example-priority"
+                class="text-button"
+                data-i18n="priority"
+              >
+                Deluxe first
+              </button>
+            </div>
+          </div>
+          <label for="file" class="file-label"
+            ><span aria-hidden="true">↥</span
+            ><span data-i18n="import">Import JSON snapshot</span
+            ><input id="file" type="file" accept=".json,application/json"
+          /></label>
+          <div class="editor-label">
+            <label for="snapshot" data-i18n="edit">Snapshot JSON</label
+            ><span id="byte-count">0 / 128 KiB</span>
+          </div>
+          <textarea
+            id="snapshot"
+            spellcheck="false"
+            aria-describedby="input-limits"
+            wrap="off"
+          ></textarea>
+          <p id="input-limits" class="hint" data-i18n="limits">
+            1–6 recipes · 100 kits each · 200,000 combinations max. Reserved
+            stock is never used.
+          </p>
+          <div class="run-row">
+            <button id="run" class="primary" data-i18n="plan">
+              Build kit plan <span aria-hidden="true">→</span></button
+            ><button id="cancel" class="secondary" hidden data-i18n="cancel">
+              Cancel
+            </button>
+          </div>
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+          <p id="error" class="error" role="alert" hidden></p>
+          <details class="help">
+            <summary data-i18n="format">Input format & objectives</summary>
+            <div data-i18n="formatHelp">
+              Stock includes reserved units. Recipe quantities are positive
+              whole components per kit. “max-kits” maximizes completed kits,
+              then favors recipe IDs in ASCII order. “recipe-priority” maximizes
+              each recipe in the listed order, even when this yields fewer kits.
+              List all recipe IDs in “priority”. Edit requested counts to change
+              the target. Only one-level recipes are supported; all components
+              must exist in stock.
+            </div>
+            <p>
+              <a
+                href="example.mjs"
+                download="example.mjs"
+                id="download-snapshot"
+                data-i18n="downloadSnapshot"
+                >Download current snapshot JSON</a
+              >
+            </p>
+          </details>
+        </section>
+        <section class="results-panel" aria-labelledby="result-heading">
+          <div class="result-head">
+            <div>
+              <p class="eyebrow" data-i18n="resultEyebrow">
+                THE WORKBENCH PLAN
+              </p>
+              <h2 id="result-heading" data-i18n="result">Ready to assemble</h2>
+            </div>
+            <span id="exact-badge" class="exact-badge" hidden data-i18n="exact"
+              >Exact plan</span
+            >
+          </div>
+          <div id="empty" class="empty panel">
+            <span class="empty-icon" aria-hidden="true">▦</span>
+            <h3 data-i18n="emptyTitle">Your next batch starts here</h3>
+            <p data-i18n="emptyHelp">
+              Choose an example or import your snapshot, then build a plan.
+            </p>
+          </div>
+          <div id="result-body" hidden>
+            <div id="metrics" class="metrics"></div>
+            <div class="objective-note" id="objective-note"></div>
+            <section class="panel result-section">
+              <div class="section-heading compact">
+                <span class="step">02</span>
+                <div>
+                  <h3 data-i18n="mix">The kit mix</h3>
+                  <p id="plan-title"></p>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table>
+                  <caption class="sr-only" data-i18n="mix">
+                    The kit mix
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th data-i18n="recipe">Recipe</th>
+                      <th data-i18n="requested">Target</th>
+                      <th data-i18n="planned">Make</th>
+                      <th data-i18n="unfilled">Unfilled</th>
+                    </tr>
+                  </thead>
+                  <tbody id="allocation"></tbody>
+                </table>
+              </div>
+            </section>
+            <section class="panel result-section">
+              <div class="section-heading compact">
+                <span class="step">03</span>
+                <div>
+                  <h3 data-i18n="materials">Material check</h3>
+                  <p data-i18n="shortageHelp">
+                    Shortages are for the full requested target
+                  </p>
+                </div>
+              </div>
+              <div class="table-scroll">
+                <table>
+                  <caption class="sr-only" data-i18n="materials">
+                    Material check
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th data-i18n="component">Component</th>
+                      <th data-i18n="reserved">Reserved</th>
+                      <th data-i18n="used">Use</th>
+                      <th data-i18n="left">Free after</th>
+                      <th data-i18n="short">Short</th>
+                    </tr>
+                  </thead>
+                  <tbody id="materials"></tbody>
+                </table>
+              </div>
+              <div class="certificate">
+                <span aria-hidden="true">✓</span>
+                <div>
+                  <strong data-i18n="balanced"
+                    >Every component accounted for</strong
+                  >
+                  <p data-i18n="equation">
+                    Stock = reserved + used + free after
+                  </p>
+                </div>
+              </div>
+            </section>
+            <section class="export-panel">
+              <div>
+                <h3 data-i18n="take">Take it to the workbench</h3>
+                <p data-i18n="takeHelp">
+                  Numbered batch sheets, quantities and a final stock check
+                </p>
+              </div>
+              <div class="exports">
+                <button id="html-export" class="primary" data-i18n="sheets">
+                  Pick sheets .html</button
+                ><button id="json-export" class="secondary">Plan .json</button
+                ><button
+                  id="csv-export"
+                  class="secondary"
+                  data-i18n="leftovers"
+                >
+                  Leftovers .csv</button
+                ><button id="picks-export" class="secondary" data-i18n="picks">
+                  Picks .csv
+                </button>
+              </div>
+              <p class="hint" data-i18n="printHelp">
+                Open the HTML download, then use your browser’s Print command.
+                Exports reflect only this snapshot.
+              </p>
+            </section>
+            <p class="evidence-line" id="evidence-line"></p>
+          </div>
+        </section>
+      </div>
+      <section class="boundaries">
+        <div>
+          <h3 data-i18n="honest">A planning tool with clear edges</h3>
+          <p data-i18n="boundaries">
+            No inventory writes, purchases, prices, labor capacity or
+            multi-level assemblies. Compare the snapshot with real stock before
+            making anything.
+          </p>
+        </div>
+        <p data-i18n="privacy">
+          Your snapshot stays in this browser tab. No uploads, analytics or
+          saved history. Download anything you want to keep.
+        </p>
+      </section>
+    </main>
+    <footer>
+      <span>Kit Ledger <span class="version">0.1.0</span></span
+      ><span data-i18n="footer">Small batches. Clear decisions.</span>
+    </footer>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

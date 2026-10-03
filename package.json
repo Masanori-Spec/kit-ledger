@@ -1,0 +1,19 @@
+{
+  "name": "kit-ledger",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A bounded, exact, local workshop-kit planner with printable pick sheets",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "check": "npm test && npm run check:syntax && npm run format:check && npm run build",
+    "check:syntax": "node scripts/check-syntax.mjs",
+    "format:check": "prettier --check src scripts test web",
+    "test:browser": "node test/browser.cjs",
+    "benchmark": "node scripts/benchmark.mjs"
+  },
+  "devDependencies": { "@playwright/test": "1.56.0", "prettier": "3.6.2" }
+}
