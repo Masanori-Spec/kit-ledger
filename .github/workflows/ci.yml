@@ -1,0 +1,50 @@
+name: Verify Kit Ledger
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  core:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        node: ['22', '24']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run check
+      - run: npm run benchmark -- --out benchmark-ci.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: core-evidence-node${{ matrix.node }}
+          path: benchmark-ci.json
+          if-no-files-found: ignore
+  browser:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    env:
+      UI_ARTIFACT_DIR: browser-artifacts
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - name: Sandboxed browser, worker races, downloads and mobile
+        run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-evidence
+          path: browser-artifacts/
+          if-no-files-found: ignore
